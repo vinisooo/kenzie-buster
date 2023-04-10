@@ -113,7 +113,7 @@ class MovieViewsT2Test(APITestCase):
         }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + employee_token)
         response = self.client.post(self.BASE_URL, data=movie_data, format="json")
-        
+
         # STATUS CODE
         expected_status_code = status.HTTP_201_CREATED
         resulted_status_code = response.status_code
