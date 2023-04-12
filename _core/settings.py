@@ -35,7 +35,7 @@ THIRD_PARTY_APPS = [
 
 
 MY_APPS = [
-    "accounts",
+    "users",
 ]
 
 
@@ -49,7 +49,7 @@ DJANGO_APPS = [
 ]
 
 INSTALLED_APPS = THIRD_PARTY_APPS + MY_APPS + DJANGO_APPS
-AUTH_USER_MODEL = "accounts.Account"
+AUTH_USER_MODEL = "users.User"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
