@@ -1,7 +1,9 @@
 from rest_framework import serializers
+from rest_framework.response import Response
 from .models import RatingChoices
-from .models import Movie
+from .models import Movie, MovieOrder
 from datetime import datetime
+from users.models import User
 
 
 class MovieSerializer(serializers.Serializer):
@@ -19,12 +21,21 @@ class MovieSerializer(serializers.Serializer):
 
 class MovieOrderSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
-    title = serializers.CharField(read_only=True, source="movie.title")
-    buyed_by = serializers.EmailField(read_only=True, source="user.email")
-    buyed_at = serializers.SerializerMethodField(read_only=True)
-    price = serializers.DecimalField(max_digits=8, decimal_places=2)
+    title = serializers.SerializerMethodField(read_only=True)
+    buyed_by = serializers.SerializerMethodField(read_only=True)
+    buyed_at = serializers.DateTimeField(read_only=True)
+    price = serializers.DecimalField(max_digits=8, decimal_places=2, required=True)
 
-    def get_buyed_at(self, obj):
-        now = datetime.now()
-        current_date = now.strftime()
-        return current_date
+    def create(self, validated_data):
+        return MovieOrder.objects.create(**validated_data)
+
+    def get_buyed_by(self, obj):
+        buyer = User.objects.get(id=obj.user_id)
+        return buyer.email
+
+    def get_title(self, obj):
+        try:
+            movie = Movie.objects.get(id=obj.movie_id)
+        except Movie.DoesNotExist:
+            return Response({"detail": "Movie not found"}, 404)
+        return movie.title

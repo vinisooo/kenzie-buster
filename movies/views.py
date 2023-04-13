@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializers import MovieSerializer
-from .models import Movie
+from .serializers import MovieSerializer, MovieOrderSerializer
+from .models import Movie, MovieOrder
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
 from .permissions import MoviesPermission
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -48,3 +48,16 @@ class MovieDetailView(APIView):
         serializer = MovieSerializer(movie, many=False)
 
         return Response(serializer.data, 200)
+
+
+class MovieOrderDetailView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAdminUser]
+
+    def post(self, request, movie_id):
+        serializer = MovieOrderSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save(movie_id=movie_id, user_id=request.user.id)
+
+        return Response(serializer.data, 201)
