@@ -4,6 +4,7 @@ from .models import Movie
 
 
 class MovieSerializer(serializers.Serializer):
+    id = serializers.ReadOnlyField()
     title = serializers.CharField(max_length=127)
     duration = serializers.CharField(max_length=10, required=False)
     rating = serializers.ChoiceField(
