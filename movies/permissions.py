@@ -8,3 +8,11 @@ class MoviesPermission(permissions.BasePermission):
             return request.user.is_employee
 
         return request.method in permissions.SAFE_METHODS
+
+
+class MoviesDetailPermission(permissions.BasePermission):
+    def has_permission(self, request: Request, view: View):
+        if request.method == "DELETE":
+            return request.user.is_employee
+
+        return request.method in permissions.SAFE_METHODS

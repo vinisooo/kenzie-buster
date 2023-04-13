@@ -25,3 +25,15 @@ class MovieView(APIView):
         serializer = MovieSerializer(movies, many=True)
 
         return Response(serializer.data, 200)
+
+
+class MovieDetailView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly, MoviesPermission]
+
+    def delete(self, request):
+        id = request.movie_id
+
+        movie = Movie.objects.get(id=id).delete()
+
+        return Response(movie, 204)
