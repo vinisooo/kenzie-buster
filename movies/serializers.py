@@ -18,6 +18,7 @@ class MovieSerializer(serializers.Serializer):
 
 
 class MovieOrderSerializer(serializers.Serializer):
+    id = serializers.ReadOnlyField()
     title = serializers.CharField(read_only=True, source="movie.title")
     buyed_by = serializers.EmailField(read_only=True, source="user.email")
     buyed_at = serializers.SerializerMethodField(read_only=True)
