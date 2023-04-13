@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import RatingChoices
 from .models import Movie
+from datetime import datetime
 
 
 class MovieSerializer(serializers.Serializer):
@@ -14,3 +15,15 @@ class MovieSerializer(serializers.Serializer):
 
     def create(self, validated_data: dict):
         return Movie.objects.create(**validated_data)
+
+
+class MovieOrderSerializer(serializers.Serializer):
+    title = serializers.CharField(read_only=True, source="movie.title")
+    buyed_by = serializers.EmailField(read_only=True, source="user.email")
+    buyed_at = serializers.SerializerMethodField(read_only=True)
+    price = serializers.DecimalField(max_digits=8, decimal_places=2)
+
+    def get_buyed_at(self, obj):
+        now = datetime.now()
+        current_date = now.strftime()
+        return current_date

@@ -16,3 +16,10 @@ class Movie(models.Model):
         max_length=20, choices=RatingChoices.choices, default=RatingChoices.G
     )
     synopsis = models.TextField(blank=True, null=True)
+
+
+class MovieOrder(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    buyed_at = models.DateTimeField()
+    price = models.DecimalField(max_digits=8, decimal_places=2)
