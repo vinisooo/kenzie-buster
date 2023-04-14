@@ -25,7 +25,7 @@ class UserSerializer(serializers.Serializer):
     password = serializers.CharField(required=True, write_only=True)
     first_name = serializers.CharField(max_length=50)
     last_name = serializers.CharField(max_length=50)
-    birthdate = serializers.DateField(required=False)
+    birthdate = serializers.DateTimeField(required=False)
     is_employee = serializers.BooleanField(default=False, required=False)
     is_superuser = serializers.ReadOnlyField()
 
