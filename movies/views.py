@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from .serializers import MovieSerializer, MovieOrderSerializer
 from .models import Movie, MovieOrder
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .permissions import MoviesPermission, MoviesPermission
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.pagination import PageNumberPagination
@@ -55,7 +55,7 @@ class MovieDetailView(APIView):
 
 class MovieOrderDetailView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, movie_id):
         serializer = MovieOrderSerializer(data=request.data)
