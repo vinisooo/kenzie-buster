@@ -29,7 +29,8 @@ class LoginView(APIView):
 
         if not user:
             return Response(
-                {"detail": "invalid credentials."}, status.HTTP_403_FORBIDDEN
+                {"detail": "No active account found with the given credentials"},
+                status.HTTP_401_UNAUTHORIZED,
             )
 
         refresh = RefreshToken.for_user(user)

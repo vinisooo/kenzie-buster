@@ -11,12 +11,19 @@ class RatingChoices(models.TextChoices):
 
 class Movie(models.Model):
     title = models.CharField(max_length=127)
-    duration = models.CharField(max_length=10, null=True, blank=True)
+    duration = models.CharField(max_length=10, null=True, blank=True, default=None)
     rating = models.CharField(
         max_length=20, choices=RatingChoices.choices, default=RatingChoices.G
     )
-    synopsis = models.TextField(blank=True, null=True)
+    synopsis = models.TextField(blank=True, null=True, default=None)
 
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="movies",
+        null=True,
+        blank=True,
+    )
     orders = models.ManyToManyField(
         "users.User", through="MovieOrder", related_name="ordered_movies"
     )

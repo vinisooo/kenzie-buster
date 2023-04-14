@@ -5,7 +5,7 @@ from .serializers import MovieSerializer, MovieOrderSerializer
 from .models import Movie, MovieOrder
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
-from .permissions import MoviesPermission
+from .permissions import MoviesPermission, MoviesPermission
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.pagination import PageNumberPagination
 
@@ -18,7 +18,7 @@ class MovieView(APIView, PageNumberPagination):
         serializer = MovieSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        serializer.save()
+        serializer.save(user_id=request.user.id)
 
         return Response(serializer.data, status.HTTP_201_CREATED)
 
@@ -40,7 +40,7 @@ class MovieDetailView(APIView):
         except Movie.DoesNotExist:
             return Response({"detail": "Movie not found"}, status.HTTP_404_NOT_FOUND)
 
-        return Response(movie, status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def get(self, request, movie_id):
         try:

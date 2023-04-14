@@ -14,9 +14,14 @@ class MovieSerializer(serializers.Serializer):
         choices=RatingChoices.choices, default="G", required=False
     )
     synopsis = serializers.CharField(required=False)
+    added_by = serializers.SerializerMethodField(read_only=True)
 
     def create(self, validated_data: dict):
         return Movie.objects.create(**validated_data)
+
+    def get_added_by(self, obj):
+        user = User.objects.get(id=obj.user_id)
+        return user.email
 
 
 class MovieOrderSerializer(serializers.Serializer):
