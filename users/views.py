@@ -54,3 +54,17 @@ class UserDetailView(APIView):
         serializer = UserSerializer(user)
 
         return Response(serializer.data, status.HTTP_200_OK)
+
+    def patch(self, request, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found"}, status.HTTP_404_NOT_FOUND)
+
+        self.check_object_permissions(request, user)
+
+        serializer = UserSerializer(user, request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+        return Response(serializer.data, status.HTTP_200_OK)
