@@ -23,7 +23,7 @@ class MovieView(APIView, PageNumberPagination):
         return Response(serializer.data, status.HTTP_201_CREATED)
 
     def get(self, request):
-        movies = Movie.objects.all()
+        movies = Movie.objects.all().order_by("id")
 
         page_result = self.paginate_queryset(movies, request, view=self)
         serializer = MovieSerializer(page_result, many=True)
