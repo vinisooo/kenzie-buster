@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework import status
 from rest_framework.views import APIView
 from .serializers import MovieSerializer, MovieOrderSerializer
 from .models import Movie, MovieOrder
@@ -19,7 +20,7 @@ class MovieView(APIView, PageNumberPagination):
 
         serializer.save()
 
-        return Response(serializer.data, 201)
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
     def get(self, request):
         movies = Movie.objects.all()
@@ -37,19 +38,19 @@ class MovieDetailView(APIView):
         try:
             movie = Movie.objects.get(id=movie_id).delete()
         except Movie.DoesNotExist:
-            return Response({"detail": "Movie not found"}, 404)
+            return Response({"detail": "Movie not found"}, status.HTTP_404_NOT_FOUND)
 
-        return Response(movie, 204)
+        return Response(movie, status.HTTP_204_NO_CONTENT)
 
     def get(self, request, movie_id):
         try:
             movie = Movie.objects.get(id=movie_id)
         except Movie.DoesNotExist:
-            return Response({"detail": "Movie not found"}, 404)
+            return Response({"detail": "Movie not found"}, status.HTTP_404_NOT_FOUND)
 
         serializer = MovieSerializer(movie, many=False)
 
-        return Response(serializer.data, 200)
+        return Response(serializer.data, status.HTTP_200_OK)
 
 
 class MovieOrderDetailView(APIView):
@@ -62,4 +63,4 @@ class MovieOrderDetailView(APIView):
 
         serializer.save(movie_id=movie_id, user_id=request.user.id)
 
-        return Response(serializer.data, 201)
+        return Response(serializer.data, status.HTTP_201_CREATED)
