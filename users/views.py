@@ -3,6 +3,10 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer, LoginSerializer
 from django.contrib.auth import authenticate
+from .models import User
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
+from .permissions import UserPermission
 
 
 class UserView(APIView):
@@ -33,3 +37,20 @@ class LoginView(APIView):
         token_dict = {"refresh": str(refresh), "access": str(refresh.access_token)}
 
         return Response(token_dict, status.HTTP_200_OK)
+
+
+class UserDetailView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [UserPermission, IsAuthenticated]
+
+    def get(self, request, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"detail": "User Not Found"}, status.HTTP_404_NOT_FOUND)
+
+        self.check_object_permissions(request, user)
+
+        serializer = UserSerializer(user)
+
+        return Response(serializer.data, status.HTTP_200_OK)
